@@ -61,7 +61,7 @@ Knowledge tracking for books, courses, articles, and podcasts. Reading/study ses
 
 | Layer | Technology |
 |-------|-----------|
-| **Backend** | Laravel 11 (PHP 8.3) |
+| **Backend** | Laravel 13 (PHP 8.3) |
 | **Frontend** | Vue 3 (Composition API) |
 | **Testing** | Pest PHP |
 | **Bridge** | Inertia.js (SSR Ready) |
