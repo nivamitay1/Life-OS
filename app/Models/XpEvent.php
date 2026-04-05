@@ -1,0 +1,22 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Models;
+
+use App\Traits\BelongsToUser;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+
+class XpEvent extends Model
+{
+    use BelongsToUser, HasFactory;
+
+    protected $fillable = [
+        'user_id', 'module_slug', 'amount', 'reason',
+    ];
+
+    protected $casts = [
+        'amount' => 'integer',
+    ];
+}
