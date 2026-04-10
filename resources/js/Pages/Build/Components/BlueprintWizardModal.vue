@@ -1,5 +1,5 @@
 <script setup>
-import { useForm } from '@inertiajs/vue3';
+import { useForm, router } from '@inertiajs/vue3';
 import Modal from '@/Components/Modal.vue';
 
 const props = defineProps({
@@ -12,6 +12,14 @@ const form = useForm({});
 
 const loadSaaSPipeline = () => {
     form.post(route('build.seed-blueprint'), {
+        onSuccess: () => {
+            emit('close');
+        }
+    });
+};
+
+const createBlankProject = () => {
+    router.post(route('build.project.store'), { name: 'Untitled Project', description: '' }, {
         onSuccess: () => {
             emit('close');
         }
@@ -46,7 +54,7 @@ const loadSaaSPipeline = () => {
                 </div>
 
                 <!-- Custom / Empty -->
-                <div class="border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-400 rounded-xl p-5 cursor-pointer flex flex-col justify-center items-center text-center bg-gray-50 dark:bg-gray-800/50 transition-all opacity-70 hover:opacity-100">
+                <div class="border-2 border-dashed border-gray-200 dark:border-gray-700 hover:border-gray-400 rounded-xl p-5 cursor-pointer flex flex-col justify-center items-center text-center bg-gray-50 dark:bg-gray-800/50 transition-all opacity-70 hover:opacity-100" @click="createBlankProject">
                     <div class="w-10 h-10 rounded-lg bg-gray-200 text-gray-500 dark:bg-gray-700 dark:text-gray-400 flex items-center justify-center mb-4">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     </div>

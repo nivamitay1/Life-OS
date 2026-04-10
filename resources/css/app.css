@@ -1,3 +1,32 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+  :root {
+    --color-atlas-background: #f7f9fb;
+    --color-atlas-surface: #ffffff;
+    --color-atlas-panel: rgba(255, 255, 255, 0.7);
+    --color-atlas-border: rgba(113, 124, 130, 0.15);
+    --color-atlas-text: #2a3439;
+    --color-atlas-muted: #566166;
+    --color-atlas-primaryStart: #545f73;
+    --color-atlas-primaryEnd: #485367;
+  }
+
+  .dark {
+    --color-atlas-background: #0f172a;
+    --color-atlas-surface: #1e293b;
+    --color-atlas-panel: rgba(30, 41, 59, 0.7);
+    --color-atlas-border: rgba(255, 255, 255, 0.15);
+    --color-atlas-text: #f8fafc;
+    --color-atlas-muted: #94a3b8;
+    --color-atlas-primaryStart: #818cf8;
+    --color-atlas-primaryEnd: #6366f1;
+  }
+
+  body {
+    @apply bg-atlas-background text-atlas-text antialiased selection:bg-atlas-primaryStart selection:text-white transition-colors duration-300;
+  }
+}
+

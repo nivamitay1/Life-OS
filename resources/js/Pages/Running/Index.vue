@@ -89,28 +89,27 @@ const cancelPlan = () => {
     <Head title="Running | Life OS" />
 
     <AuthenticatedLayout>
-        <template #header>
-            <div class="flex justify-between items-center px-2">
-                <div>
-                    <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">Running Workspace</h2>
-                </div>
-            </div>
-        </template>
-
-        <div class="space-y-6 sm:space-y-8 px-2">
+        <div class="space-y-12 mt-2 px-2">
             
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Weekly Mileage</dt>
-                    <dd class="mt-2 text-3xl font-black text-gray-900 dark:text-white">{{ stats.weeklyMileage }}</dd>
+            <div class="flex items-center justify-between">
+                <h1 class="text-[10px] uppercase tracking-[0.2em] font-bold text-atlas-muted border border-atlas-border px-4 py-2 rounded-lg bg-atlas-panel shadow-sm">Running Workspace</h1>
+            </div>
+
+            <!-- Floating Data Row (Key Stats) -->
+            <div class="flex flex-wrap gap-x-16 gap-y-8 px-4 items-center">
+                <div>
+                    <dt class="text-[10px] font-bold text-atlas-muted uppercase tracking-widest mb-1.5">Weekly Mileage</dt>
+                    <dd class="text-3xl font-serif text-atlas-text">{{ stats.weeklyMileage }} <span class="text-sm font-sans text-atlas-muted">km</span></dd>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Total Runs (Month)</dt>
-                    <dd class="mt-2 text-3xl font-black text-orange-600 dark:text-orange-400">{{ totalRunsThisMonth }}</dd>
+                <div class="w-px h-12 bg-atlas-border/50 hidden md:block"></div>
+                <div>
+                    <dt class="text-[10px] font-bold text-atlas-muted uppercase tracking-widest mb-1.5">Total Runs (Month)</dt>
+                    <dd class="text-3xl font-serif text-atlas-text">{{ totalRunsThisMonth }}</dd>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-2xl p-6 border border-gray-100 dark:border-gray-700 shadow-sm relative overflow-hidden group">
-                    <dt class="text-sm font-medium text-gray-500 dark:text-gray-400">Longest Run</dt>
-                    <dd class="mt-2 text-3xl font-black text-orange-600 dark:text-orange-400">{{ longestRunDist }} km</dd>
+                <div class="w-px h-12 bg-atlas-border/50 hidden md:block"></div>
+                <div>
+                    <dt class="text-[10px] font-bold text-atlas-muted uppercase tracking-widest mb-1.5">Longest Run</dt>
+                    <dd class="text-3xl font-serif text-atlas-text">{{ longestRunDist }} <span class="text-sm font-sans text-atlas-muted">km</span></dd>
                 </div>
             </div>
 
@@ -123,18 +122,20 @@ const cancelPlan = () => {
                 @confirmAbandonPlan="openAbandonPlanModal"
             />
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 sm:gap-8">
-                <div class="lg:col-span-2 space-y-6">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-12 pt-6">
+                <div class="lg:col-span-2 space-y-12">
                     <RecentRunsList :runs="runs" />
                 </div>
-                <div class="space-y-6 sm:space-y-8">
+                <div class="space-y-12">
                     <!-- Progress Card -->
-                    <div v-if="levelData" class="bg-gradient-to-br from-orange-500 to-red-500 rounded-2xl shadow-sm p-6 text-white text-center">
-                        <h3 class="text-orange-100 text-sm font-bold uppercase tracking-wider mb-2">Module Level</h3>
-                        <div class="text-4xl font-black mb-1">{{ levelData.level }}</div>
-                        <div class="text-sm text-orange-100 mb-4">{{ Number(levelData.xp).toLocaleString() }} / {{ Number(levelData.next_level_base).toLocaleString() }} XP</div>
-                        <div class="w-full bg-black/20 rounded-full h-1.5 overflow-hidden mb-2">
-                            <div class="bg-white h-1.5 rounded-full" :style="{ width: levelData.progress_percent + '%' }"></div>
+                    <div class="bg-atlas-panel border border-atlas-border backdrop-blur-2xl rounded-[24px] shadow-ambient p-8 text-center flex flex-col items-center">
+                        <h3 class="text-atlas-muted text-[10px] font-bold uppercase tracking-widest mb-3">Running Mastery</h3>
+                        <div v-if="levelData" class="w-full">
+                            <div class="text-5xl font-serif text-atlas-text mb-2">{{ levelData.level }}</div>
+                            <div class="text-xs tracking-wide text-atlas-muted mb-6">{{ Number(levelData.xp).toLocaleString() }} / {{ Number(levelData.next_level_base).toLocaleString() }} XP</div>
+                            <div class="w-full bg-atlas-surface border border-atlas-border/50 rounded-full h-1.5 overflow-hidden">
+                                <div class="bg-atlas-text h-1.5 rounded-full" :style="{ width: levelData.progress_percent + '%' }"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
