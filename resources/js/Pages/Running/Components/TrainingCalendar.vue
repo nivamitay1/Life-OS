@@ -42,40 +42,40 @@ const currentWeek = computed(() => {
 </script>
 
 <template>
-    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden mt-6">
-        <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50">
-            <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                <svg class="w-5 h-5 text-orange-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+    <div class="bg-atlas-panel border border-atlas-border backdrop-blur-2xl rounded-[24px] shadow-ambient overflow-hidden mt-6">
+        <div class="px-8 py-6 border-b border-atlas-border/50 flex justify-between items-center bg-atlas-background/30">
+            <h3 class="font-bold text-atlas-text text-sm uppercase tracking-widest flex items-center gap-3">
+                <svg class="w-5 h-5 text-atlas-primaryStart" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
                 Training Calendar
             </h3>
             <div v-if="activePlan" class="flex gap-4 items-center">
-                <span class="text-xs font-bold px-2 py-1 rounded bg-orange-100 text-orange-600 dark:bg-orange-500/20 dark:text-orange-400">
+                <span class="text-[10px] font-bold uppercase tracking-widest px-3 py-1.5 rounded-lg bg-atlas-surface border border-atlas-border shadow-sm text-atlas-text">
                     {{ activePlan.name }}
                 </span>
-                <button @click="emit('confirmAbandonPlan')" class="text-xs font-bold text-red-500 hover:text-red-700 transition-colors">
+                <button @click="emit('confirmAbandonPlan')" class="text-[10px] uppercase font-bold text-red-400 hover:text-red-300 transition-colors">
                     Abandon Plan
                 </button>
             </div>
         </div>
         
-        <div class="p-6">
-            <div v-if="!activePlan" class="text-center py-6">
-                <p class="text-gray-500 dark:text-gray-400 mb-4">You don't have an active training plan.</p>
+        <div class="p-8">
+            <div v-if="!activePlan" class="text-center py-12">
+                <p class="text-atlas-muted text-sm tracking-wide mb-6">You don't have an active training plan.</p>
                 <div v-if="templates.length === 0">
-                    <button @click="seedTemplates" class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-4 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors hover:bg-gray-800 dark:hover:bg-gray-100">
+                    <button @click="seedTemplates" class="bg-gradient-to-br from-atlas-primaryStart to-atlas-primaryEnd text-atlas-surface px-6 py-3 rounded-xl text-xs font-bold tracking-wider uppercase shadow-ambient transition-transform hover:scale-95">
                         Load Available Plans
                     </button>
                 </div>
-                <div v-else class="flex flex-col items-center gap-8">
-                    <button @click="emit('openCustomPlan')" class="bg-gray-900 dark:bg-white text-white dark:text-gray-900 px-6 py-2 rounded-xl text-sm font-bold shadow-sm transition-colors hover:bg-gray-800 dark:hover:bg-gray-100">
+                <div v-else class="flex flex-col items-center gap-12">
+                    <button @click="emit('openCustomPlan')" class="bg-atlas-surface border border-atlas-border text-atlas-text px-8 py-3 rounded-xl text-xs font-bold uppercase tracking-wider shadow-sm transition-transform hover:scale-95">
                         + Create Custom Plan
                     </button>
                     
-                    <div class="flex flex-wrap gap-4 justify-center">
-                        <div v-for="t in templates" :key="t.id" class="border border-gray-200 dark:border-gray-700 p-5 rounded-xl w-64 text-left">
-                            <h4 class="font-bold text-gray-900 dark:text-white mb-1">{{ t.name }}</h4>
-                            <p class="text-xs text-gray-500 mb-4">{{ t.duration_weeks }} Weeks • {{ String(t.experience_level).toUpperCase() }}</p>
-                            <button @click="startPlan(t.id)" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-lg text-xs font-bold transition-colors shadow-sm">
+                    <div class="flex flex-wrap gap-6 justify-center">
+                        <div v-for="t in templates" :key="t.id" class="bg-atlas-panels border border-atlas-border p-6 rounded-2xl w-72 text-left hover:border-atlas-primaryStart/50 transition-colors">
+                            <h4 class="font-serif text-xl tracking-tight text-atlas-text mb-2">{{ t.name }}</h4>
+                            <p class="text-[10px] uppercase font-bold text-atlas-muted tracking-wide mb-6">{{ t.duration_weeks }} Weeks • {{ String(t.experience_level).toUpperCase() }}</p>
+                            <button @click="startPlan(t.id)" class="w-full bg-atlas-surface border border-atlas-border hover:bg-atlas-background text-atlas-text py-2 rounded-lg text-[10px] uppercase font-bold tracking-widest transition-colors shadow-sm">
                                 Start Target Plan
                             </button>
                         </div>
@@ -84,49 +84,51 @@ const currentWeek = computed(() => {
             </div>
             
             <div v-else-if="currentWeek">
-                <div class="mb-4">
-                    <h4 class="font-bold text-lg text-gray-900 dark:text-white">Week {{ currentWeek.week_number }}: {{ currentWeek.theme_label || 'Training Block' }}</h4>
-                    <p class="text-xs text-gray-500">{{ formatDate(currentWeek.start_date) }} to {{ formatDate(currentWeek.end_date) }}</p>
+                <div class="mb-6">
+                    <h4 class="font-serif text-2xl tracking-tight text-atlas-text">Week {{ currentWeek.week_number }}: {{ currentWeek.theme_label || 'Training Block' }}</h4>
+                    <p class="text-[10px] uppercase font-bold tracking-widest text-atlas-muted mt-2">{{ formatDate(currentWeek.start_date) }} to {{ formatDate(currentWeek.end_date) }}</p>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
-                    <div v-for="day in 7" :key="day" class="min-h-32">
+                <div class="flex gap-5 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory">
+                    <div v-for="day in 7" :key="day" class="min-w-[280px] flex-shrink-0 snap-start min-h-[220px] flex flex-col">
                         <div v-if="currentWeek.workouts.find(w => new Date(w.scheduled_date).getDay() === (day%7))" 
-                                :class="['h-full border p-3 rounded-xl flex flex-col', currentWeek.workouts.find(w => new Date(w.scheduled_date).getDay() === (day%7)).status === 'completed' ? 'bg-orange-50/50 border-orange-200 dark:bg-orange-900/10 dark:border-orange-800/50' : 'bg-white border-gray-100 dark:bg-gray-800 dark:border-gray-700']">
+                                :class="['h-full border p-6 flex flex-col transition-colors', currentWeek.workouts.find(w => new Date(w.scheduled_date).getDay() === (day%7)).status === 'completed' ? 'bg-atlas-primaryStart/5 border-atlas-primaryStart/40' : 'bg-atlas-panel border-atlas-border shadow-sm']">
                             
                             <template v-for="workout in [currentWeek.workouts.find(w => new Date(w.scheduled_date).getDay() === (day%7))]">
-                                <div class="text-[10px] font-bold uppercase text-gray-400 mb-1 flex justify-between">
+                                <div class="text-[10px] font-bold uppercase tracking-widest text-atlas-muted mb-3 flex justify-between">
                                     <span>{{ new Date(workout.scheduled_date).toLocaleDateString('en-US', {weekday: 'short'}) }}</span>
                                     <div class="flex gap-2">
-                                        <span v-if="workout.status === 'completed'" class="text-orange-500">✓</span>
-                                        <button v-if="workout.status === 'scheduled'" @click.stop="deleteWorkout(workout.id)" class="text-red-400 hover:text-red-600 transition-colors">×</button>
+                                        <span v-if="workout.status === 'completed'" class="text-atlas-primaryStart">✓</span>
+                                        <button v-if="workout.status === 'scheduled'" @click.stop="deleteWorkout(workout.id)" class="text-red-400/50 hover:text-red-500 transition-colors">×</button>
                                     </div>
                                 </div>
-                                <h5 class="font-bold text-sm text-gray-900 dark:text-white mb-1 leading-tight">{{ workout.title }}</h5>
-                                <p v-if="workout.target_distance_km" class="text-xs font-bold text-orange-600 dark:text-orange-400 mb-2">{{ workout.target_distance_km }} km</p>
-                                <p v-else-if="workout.target_duration_sec" class="text-xs font-bold text-orange-600 dark:text-orange-400 mb-2">{{ Math.round(workout.target_duration_sec / 60) }} mins</p>
-                                <p class="text-[10px] text-gray-500 mt-auto leading-relaxed">{{ workout.instructions }}</p>
+                                <h5 class="font-serif text-base text-atlas-text mb-2 leading-tight tracking-tight">{{ workout.title }}</h5>
+                                <p v-if="workout.target_distance_km" class="text-sm font-bold text-atlas-primaryStart mb-3">{{ workout.target_distance_km }} <span class="text-[10px] uppercase tracking-widest text-atlas-muted align-middle">km</span></p>
+                                <p v-else-if="workout.target_duration_sec" class="text-sm font-bold text-atlas-primaryStart mb-3">{{ Math.round(workout.target_duration_sec / 60) }} <span class="text-[10px] uppercase tracking-widest text-atlas-muted align-middle">mins</span></p>
+                                <p class="text-[10px] font-sans font-medium text-atlas-muted mt-auto leading-relaxed">{{ workout.instructions }}</p>
                                 
-                                <div v-if="workout.status === 'scheduled'" class="mt-2 pt-2 border-t border-gray-100 dark:border-gray-700 flex justify-between gap-1">
-                                    <button @click.prevent="updateWorkoutStatus(workout.id, 'skipped')" class="flex-1 text-[9px] py-1 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Skip</button>
-                                    <button @click.prevent="emit('openAddWorkout', currentWeek.id, workout.scheduled_date, workout)" class="flex-1 text-[9px] py-1 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors">Edit</button>
-                                    <button @click.prevent="emit('openCompleteWorkout', workout)" class="flex-1 text-[9px] py-1 rounded bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 font-bold hover:bg-orange-200 dark:hover:bg-orange-900/60 transition-colors">Done</button>
+                                <div v-if="workout.status === 'scheduled'" class="mt-4 flex flex-col gap-2">
+                                    <button @click.prevent="emit('openCompleteWorkout', workout)" class="w-full text-[10px] uppercase tracking-widest py-2 rounded bg-atlas-text text-atlas-surface border border-atlas-text font-black hover:opacity-90 transition-opacity">Done</button>
+                                    <div class="flex gap-2">
+                                        <button @click.prevent="updateWorkoutStatus(workout.id, 'skipped')" class="flex-1 text-[9px] uppercase tracking-[0.2em] py-1.5 border border-atlas-border rounded bg-transparent text-atlas-muted font-bold hover:text-atlas-text hover:border-atlas-text transition-colors">Skip</button>
+                                        <button @click.prevent="emit('openAddWorkout', currentWeek.id, workout.scheduled_date, workout)" class="flex-1 text-[9px] uppercase tracking-[0.2em] py-1.5 border border-atlas-border rounded bg-atlas-surface text-atlas-text font-bold hover:border-atlas-text transition-colors">Edit</button>
+                                    </div>
                                 </div>
-                                <div v-else-if="workout.status === 'completed' || workout.status === 'partially_completed'" class="mt-2 pt-2 border-t border-orange-100 dark:border-orange-800/30 flex justify-between items-center gap-1">
-                                    <span class="text-[9px] font-bold text-orange-500 uppercase tracking-wide">Completed</span>
-                                    <button @click.prevent="emit('openAddWorkout', currentWeek.id, workout.scheduled_date, workout)" class="text-[9px] py-1 px-2 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors">Edit</button>
+                                <div v-else-if="workout.status === 'completed' || workout.status === 'partially_completed'" class="mt-4 flex justify-between items-center gap-2">
+                                    <span class="text-[9px] font-bold text-atlas-primaryStart uppercase tracking-[0.2em]">Completed</span>
+                                    <button @click.prevent="emit('openAddWorkout', currentWeek.id, workout.scheduled_date, workout)" class="text-[9px] uppercase tracking-[0.2em] py-1 px-3 border border-atlas-primaryStart/30 text-atlas-primaryStart font-bold hover:bg-atlas-primaryStart/10 transition-colors">Edit</button>
                                 </div>
-                                <div v-else-if="workout.status === 'skipped'" class="mt-2 pt-2 border-t border-gray-200 dark:border-gray-700 flex justify-between items-center gap-1">
-                                    <span class="text-[9px] font-bold text-gray-400 uppercase tracking-wide">Skipped</span>
-                                    <div class="flex gap-1">
-                                        <button @click.prevent="updateWorkoutStatus(workout.id, 'scheduled')" class="text-[9px] py-1 px-2 rounded bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 font-bold hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors">Undo</button>
-                                        <button @click.prevent="emit('openAddWorkout', currentWeek.id, workout.scheduled_date, workout)" class="text-[9px] py-1 px-2 rounded bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 font-bold hover:bg-blue-100 dark:hover:bg-blue-900/60 transition-colors">Edit</button>
+                                <div v-else-if="workout.status === 'skipped'" class="mt-4 flex justify-between items-center gap-2">
+                                    <span class="text-[10px] font-bold text-atlas-muted uppercase tracking-[0.2em] line-through opacity-50">Skipped</span>
+                                    <div class="flex gap-2">
+                                        <button @click.prevent="updateWorkoutStatus(workout.id, 'scheduled')" class="text-[9px] uppercase tracking-[0.2em] py-1 px-2 border border-atlas-border bg-transparent text-atlas-muted font-bold hover:text-atlas-text hover:border-atlas-text transition-colors">Undo</button>
+                                        <button @click.prevent="emit('openAddWorkout', currentWeek.id, workout.scheduled_date, workout)" class="text-[9px] uppercase tracking-[0.2em] py-1 px-2 border border-atlas-border bg-atlas-surface text-atlas-text font-bold hover:border-atlas-text transition-colors">Edit</button>
                                     </div>
                                 </div>
                             </template>
                         </div>
-                        <div v-else @click="emit('openAddWorkout', currentWeek.id, new Date(new Date(currentWeek.start_date).getTime() + ((day - 1) * 24 * 60 * 60 * 1000)).toISOString().split('T')[0])" class="h-full border border-dashed border-gray-200 dark:border-gray-700 rounded-xl p-3 flex flex-col justify-center items-center opacity-50 hover:bg-gray-50 dark:hover:bg-gray-800 hover:opacity-100 cursor-pointer transition-all">
-                            <span class="text-[10px] font-bold uppercase text-gray-400 mb-1">Day {{ day }}</span>
-                            <span class="text-xs font-bold text-gray-400 dark:text-gray-500">+ Add</span>
+                        <div v-else @click="emit('openAddWorkout', currentWeek.id, new Date(new Date(currentWeek.start_date).getTime() + ((day - 1) * 24 * 60 * 60 * 1000)).toISOString().split('T')[0])" class="h-full border-[1.5px] border-dashed border-atlas-border/50 p-6 flex flex-col justify-center items-center opacity-60 hover:bg-atlas-surface hover:border-solid hover:border-atlas-text hover:opacity-100 cursor-pointer transition-all group">
+                            <span class="text-[9px] uppercase tracking-[0.3em] font-bold text-atlas-muted mb-2 group-hover:text-atlas-text transition-colors">Day {{ day }}</span>
+                            <span class="text-xs uppercase tracking-[0.2em] font-bold text-atlas-muted group-hover:text-atlas-text">+ Add Drill</span>
                         </div>
                     </div>
                 </div>

@@ -133,29 +133,29 @@ const undoAction = async () => {
 
 <template>
     <div class="fixed inset-0 z-50 flex items-start justify-center pt-[15vh]">
-        <div class="absolute inset-0 bg-gray-900/40 dark:bg-black/60 backdrop-blur-sm transition-opacity" @click="emit('close')"></div>
-        <div class="relative w-full max-w-xl bg-white dark:bg-gray-900 rounded-2xl shadow-[0_20px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden border border-gray-100 dark:border-gray-700 animate-in fade-in zoom-in-95 duration-200">
+        <div class="absolute inset-0 bg-atlas-background/80 backdrop-blur-sm transition-opacity" @click="emit('close')"></div>
+        <div class="relative w-full max-w-2xl bg-atlas-panel/90 backdrop-blur-3xl rounded-[24px] shadow-ambient overflow-hidden border border-atlas-border animate-in fade-in zoom-in-95 duration-200">
             
-            <div v-if="toast" class="p-8 text-center animate-in slide-in-from-bottom-4 duration-300">
-                <div class="mx-auto w-16 h-16 bg-emerald-100 dark:bg-emerald-900/30 rounded-2xl flex items-center justify-center mb-4 text-emerald-600 dark:text-emerald-400">
+            <div v-if="toast" class="p-10 text-center animate-in slide-in-from-bottom-4 duration-300">
+                <div class="mx-auto w-16 h-16 bg-atlas-surface border border-atlas-border/50 rounded-2xl flex items-center justify-center mb-6 text-atlas-primaryStart shadow-sm">
                     <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
                 </div>
-                <h3 class="text-xl font-bold text-gray-900 dark:text-white">{{ toast.message }}</h3>
-                <p class="text-sm font-medium text-gray-500 dark:text-gray-400 mt-2">{{ toast.detail }}</p>
+                <h3 class="text-3xl font-serif tracking-tight text-atlas-text">{{ toast.message }}</h3>
+                <p class="text-sm font-sans text-atlas-muted mt-3 tracking-wide">{{ toast.detail }}</p>
                 
-                <div class="mt-8 flex justify-center gap-3">
-                    <button @click="undoAction" :disabled="isProcessing" class="px-5 py-2.5 text-sm font-bold text-gray-600 dark:text-gray-300 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-xl transition-colors">
+                <div class="mt-10 flex justify-center gap-3">
+                    <button @click="undoAction" :disabled="isProcessing" class="px-6 py-3 text-sm font-medium tracking-wide text-atlas-muted bg-atlas-surface hover:text-atlas-text hover:bg-atlas-background border border-atlas-border rounded-xl transition-colors">
                         Undo Action
                     </button>
-                    <button @click="emit('close')" class="px-5 py-2.5 text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 rounded-xl transition-colors shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-indigo-600 focus:outline-none">
+                    <button @click="emit('close')" class="px-6 py-3 text-sm font-medium tracking-wide text-atlas-surface bg-gradient-to-br from-atlas-primaryStart to-atlas-primaryEnd rounded-xl shadow-ambient hover:scale-95 transition-transform">
                         Done
                     </button>
                 </div>
             </div>
 
             <div v-else class="flex flex-col">
-                <div class="flex items-center px-4 border-b border-gray-100 dark:border-gray-800 relative">
-                    <svg class="h-6 w-6 text-indigo-500 flex-shrink-0 ml-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <div class="flex items-center px-4 relative">
+                    <svg class="h-6 w-6 text-atlas-primaryStart flex-shrink-0 ml-4 opacity-70" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                     <input 
@@ -164,23 +164,23 @@ const undoAction = async () => {
                         @keydown.enter.prevent="submitCommand"
                         @keydown.esc.prevent="emit('close')"
                         type="text" 
-                        class="w-full border-0 bg-transparent py-5 pl-4 pr-4 text-gray-900 dark:text-white placeholder:text-gray-300 dark:placeholder:text-gray-600 focus:ring-0 text-xl font-medium" 
-                        placeholder="Type a command..." 
+                        class="w-full border-0 bg-transparent py-8 pl-4 pr-4 text-atlas-text placeholder:text-atlas-muted/30 focus:ring-0 text-3xl font-serif tracking-tight" 
+                        placeholder="Define your operation..." 
                         :disabled="isProcessing"
                     >
-                    <div v-if="isProcessing" class="absolute right-6">
-                        <svg class="animate-spin h-5 w-5 text-indigo-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <div v-if="isProcessing" class="absolute right-8">
+                        <svg class="animate-spin h-6 w-6 text-atlas-primaryStart" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                         </svg>
                     </div>
                 </div>
-                <div class="px-6 py-3.5 bg-gray-50/80 dark:bg-gray-800/80 flex items-center justify-between">
-                    <span :class="{'text-gray-500 dark:text-gray-400 font-medium': helperType==='neutral', 'text-red-500 font-bold': helperType==='error', 'text-emerald-500 font-bold': helperType==='success'}" class="text-xs">
+                <div class="px-8 py-4 bg-atlas-surface/80 border-t border-atlas-border/50 flex items-center justify-between">
+                    <span :class="{'text-atlas-muted font-medium': helperType==='neutral', 'text-red-500 font-medium': helperType==='error', 'text-atlas-primaryStart font-medium': helperType==='success'}" class="text-xs font-sans tracking-wide">
                         {{ helperText }}
                     </span>
-                    <span class="text-[10px] uppercase tracking-wider font-bold text-gray-400 dark:text-gray-500">
-                        <kbd class="px-1.5 py-0.5 rounded border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 shadow-sm font-sans mx-0.5 text-[10px]">Esc</kbd> to close
+                    <span class="text-[10px] uppercase tracking-widest font-bold text-atlas-muted/70 flex items-center gap-1.5">
+                        <kbd class="px-2 py-0.5 rounded bg-atlas-panel border border-atlas-border shadow-sm font-sans text-[10px] text-atlas-muted">Esc</kbd> to close
                     </span>
                 </div>
             </div>

@@ -37,30 +37,30 @@ const filteredTasks = computed(() => {
 </script>
 
 <template>
-    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
-        <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-            <h3 class="font-bold text-gray-900 dark:text-white">Active Tasks</h3>
-            <div class="flex gap-2">
-                <select v-model="filterStatus" class="text-xs font-medium rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 py-1.5 focus:border-blue-500 text-gray-900 dark:text-white">
+    <div class="bg-atlas-panel backdrop-blur-2xl border border-atlas-border rounded-[24px] shadow-ambient overflow-hidden">
+        <div class="px-8 py-6 border-b border-atlas-border/50 flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-atlas-surface/30">
+            <h3 class="font-serif text-lg text-atlas-text">Active Tasks</h3>
+            <div class="flex gap-3">
+                <select v-model="filterStatus" class="text-[10px] uppercase font-bold tracking-widest rounded-lg border-atlas-border bg-atlas-panel py-2 focus:ring-0 focus:border-atlas-primaryStart text-atlas-muted">
                     <option value="all">All Tasks</option>
                     <option value="todo">To Do</option>
                     <option value="in_progress">In Progress</option>
                 </select>
-                <select v-model="sortBy" class="text-xs font-medium rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 py-1.5 focus:border-blue-500 text-gray-900 dark:text-white">
+                <select v-model="sortBy" class="text-[10px] uppercase font-bold tracking-widest rounded-lg border-atlas-border bg-atlas-panel py-2 focus:ring-0 focus:border-atlas-primaryStart text-atlas-muted">
                     <option value="urgent">Urgent First</option>
                     <option value="new">Newest First</option>
                 </select>
             </div>
         </div>
-        <ul v-if="filteredTasks.length > 0" class="divide-y divide-gray-100 dark:divide-gray-700/50">
-            <li v-for="task in filteredTasks" :key="task.id" class="px-6 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                <p class="text-sm font-medium text-gray-900 dark:text-white flex items-center gap-2">
-                    <span v-if="task.is_blocker" class="text-[10px] text-red-500 uppercase tracking-wider font-bold">Blocker</span>
+        <ul v-if="filteredTasks.length > 0" class="divide-y divide-atlas-border/30">
+            <li v-for="task in filteredTasks" :key="task.id" class="px-8 py-5 flex items-center justify-between hover:bg-atlas-surface transition-colors group">
+                <p class="text-sm font-medium text-atlas-text flex items-center gap-3">
+                    <span v-if="task.is_blocker" class="text-[10px] text-atlas-muted border border-red-500/30 bg-red-500/10 px-2 py-0.5 rounded uppercase tracking-widest font-bold">Blocker</span>
                     {{ task.title }}
                 </p>
-                <span class="text-xs font-semibold px-2 py-0.5 rounded bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300">{{ task.project }}</span>
+                <span class="text-[10px] font-bold uppercase tracking-widest px-2 py-1 rounded bg-atlas-surface border border-atlas-border text-atlas-muted opacity-60 group-hover:opacity-100 transition-opacity">{{ task.project }}</span>
             </li>
         </ul>
-        <div v-else class="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No active tasks match this filter.</div>
+        <div v-else class="p-10 text-center text-atlas-muted text-xs tracking-wide">No active tasks match this filter.</div>
     </div>
 </template>

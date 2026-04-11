@@ -2,6 +2,8 @@
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue';
 import { Head, useForm, Link } from '@inertiajs/vue3';
 import { ref, computed } from 'vue';
+import EditTaskModal from './Components/EditTaskModal.vue';
+import EditProjectModal from './Components/EditProjectModal.vue';
 
 const props = defineProps({
   project: Object,
@@ -16,6 +18,15 @@ const taskForm = useForm({
 });
 
 const activeColumn = ref('todo');
+const showEditModal = ref(false);
+const editingTask = ref(null);
+
+const showEditProjectModal = ref(false);
+
+const openEditMenu = (task) => {
+    editingTask.value = task;
+    showEditModal.value = true;
+};
 
 const submitTask = (status) => {
     taskForm.status = status;
@@ -54,120 +65,154 @@ const getInitial = (name) => {
 <template>
     <Head :title="`${project.name} | Build | Life OS`" />
 
-    <AuthenticatedLayout>
-        <template #header>
-            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4 px-2">
-                <div>
-                    <div class="flex items-center gap-3 mb-1">
-                        <Link :href="route('build.index')" class="text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors">
-                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
-                        </Link>
-                        <h2 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-3xl">{{ project.name }}</h2>
-                    </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 ml-8">{{ project.description || 'No description provided.' }}</p>
-                </div>
-                <!-- Mini Module Progress Widget -->
-                <div class="bg-gradient-to-r from-blue-500/10 to-indigo-500/10 dark:from-blue-500/20 dark:to-indigo-500/20 border border-blue-100 dark:border-blue-900/50 rounded-xl px-4 py-2 flex items-center gap-4">
-                    <div class="text-center">
-                        <div class="text-[10px] uppercase font-bold text-blue-600 dark:text-blue-400">Build Lvl</div>
-                        <div class="font-black text-gray-900 dark:text-white">{{ levelData.level }}</div>
-                    </div>
-                    <div class="w-24 bg-white/50 dark:bg-black/20 rounded-full h-2 overflow-hidden">
-                        <div class="bg-blue-500 h-2 rounded-full" :style="{ width: levelData.progress_percent + '%' }"></div>
-                    </div>
-                </div>
-            </div>
-        </template>
-
-        <div class="h-[calc(100vh-12rem)] flex gap-6 px-2 overflow-x-auto pb-4 pt-4">
-            
-            <!-- Column: Todo -->
-            <div class="flex-shrink-0 w-80 flex flex-col bg-gray-50/50 dark:bg-gray-800/20 rounded-2xl border border-gray-100 dark:border-gray-800">
-                <div class="p-4 border-b border-gray-100 dark:border-gray-800 flex justify-between items-center bg-white dark:bg-gray-800/80 rounded-t-2xl shadow-sm z-10">
-                    <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-gray-400"></span>
-                        To Do
-                    </h3>
-                    <span class="bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-300 text-xs font-bold px-2 py-0.5 rounded-full">{{ todoTasks.length }}</span>
-                </div>
-                
-                <div class="flex-1 overflow-y-auto p-4 space-y-3">
-                    <div v-for="task in todoTasks" :key="task.id" class="group bg-white dark:bg-gray-800 p-4 rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-blue-200 dark:hover:border-blue-900/50 transition-all flex flex-col justify-between min-h-[100px]">
-                        <div>
-                            <p class="font-medium text-sm text-gray-900 dark:text-white leading-snug">{{ task.title }}</p>
-                        </div>
-                        <div class="flex justify-end mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button @click="updateStatus(task, 'in_progress')" class="text-xs bg-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:hover:bg-blue-900/30 text-gray-600 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 px-3 py-1.5 rounded-lg border border-transparent hover:border-blue-100 dark:hover:border-blue-800 transition-all font-medium flex items-center gap-1">
-                                Start <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="p-4 bg-white/50 dark:bg-gray-800/50 rounded-b-2xl border-t border-gray-100 dark:border-gray-800">
-                    <form @submit.prevent="submitTask('todo')" class="flex gap-2 relative">
-                        <input type="text" v-model="taskForm.title" placeholder="Add a new task..." required class="w-full rounded-xl border-gray-200 dark:border-gray-700 dark:bg-gray-900 shadow-sm focus:border-blue-500 focus:ring-blue-500 text-sm py-2 px-3 pr-10 text-gray-900 dark:text-white">
-                        <button type="submit" :disabled="taskForm.processing" class="absolute right-2 top-1.5 text-gray-400 hover:text-blue-600 p-1 rounded-md transition-colors">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+    <AuthenticatedLayout maxWidth="max-w-none">
+        <div class="space-y-12 px-8 flex flex-col items-center">
+            <!-- Breadcrumb Header -->
+            <div class="flex items-center justify-between w-full max-w-7xl">
+                <div class="flex items-center gap-6">
+                    <Link :href="route('build.index')" class="text-atlas-muted hover:text-atlas-text transition-colors">
+                        <h1 class="text-[10px] uppercase tracking-[0.2em] font-bold border border-atlas-border px-4 py-2 rounded-lg bg-atlas-panel shadow-sm flex items-center gap-2">
+                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                             Build Workspace
+                        </h1>
+                    </Link>
+                    <div class="flex items-center gap-4 group/header cursor-pointer" @click="showEditProjectModal = true">
+                        <span class="w-1.5 h-1.5 rounded-full bg-atlas-primaryStart opacity-30"></span>
+                        <span class="text-2xl font-serif text-atlas-text tracking-tight group-hover/header:opacity-80 transition-opacity">{{ project.name }}</span>
+                        <button class="text-atlas-muted opacity-0 group-hover/header:opacity-100 transition-opacity hover:text-atlas-text px-2">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
                         </button>
-                    </form>
+                    </div>
                 </div>
-            </div>
 
-            <!-- Column: In Progress -->
-            <div class="flex-shrink-0 w-80 flex flex-col bg-blue-50/50 dark:bg-blue-900/10 rounded-2xl border border-blue-50 dark:border-blue-900/30">
-                <div class="p-4 border-b border-blue-50 dark:border-blue-900/30 flex justify-between items-center bg-white dark:bg-gray-800/80 rounded-t-2xl shadow-sm z-10">
-                    <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                        In Progress
-                    </h3>
-                    <span class="bg-blue-100 text-blue-600 dark:bg-blue-900/50 dark:text-blue-300 text-xs font-bold px-2 py-0.5 rounded-full">{{ inProgressTasks.length }}</span>
-                </div>
-                
-                <div class="flex-1 overflow-y-auto p-4 space-y-3">
-                    <div v-for="task in inProgressTasks" :key="task.id" class="group bg-white dark:bg-gray-800 p-4 rounded-xl border border-blue-100 dark:border-gray-700 shadow-sm hover:shadow-md hover:border-blue-300 dark:hover:border-blue-600 transition-all flex flex-col justify-between min-h-[100px]">
-                        <div>
-                            <p class="font-medium text-sm text-gray-900 dark:text-white leading-snug">{{ task.title }}</p>
-                        </div>
-                        <div class="flex justify-between mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button @click="updateStatus(task, 'todo')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                            </button>
-                            <button @click="updateStatus(task, 'done')" class="text-xs bg-blue-50 hover:bg-emerald-50 dark:bg-blue-900/20 dark:hover:bg-emerald-900/30 text-blue-600 dark:text-blue-400 hover:text-emerald-600 dark:hover:text-emerald-400 px-3 py-1.5 rounded-lg border border-transparent hover:border-emerald-200 dark:hover:border-emerald-800 transition-all font-bold flex items-center gap-1">
-                                Complete <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
-                            </button>
-                        </div>
+                <!-- Mini Progress -->
+                <div class="flex items-center gap-5">
+                    <div class="flex flex-col items-end gap-1">
+                        <span class="text-[9px] font-bold text-atlas-muted uppercase tracking-[0.2em]">Build Mastery</span>
+                        <span class="text-xs font-serif text-atlas-text opacity-70">{{ levelData.level }} / 10</span>
+                    </div>
+                    <div class="w-32 bg-atlas-surface border border-atlas-border/50 rounded-full h-1 overflow-hidden relative">
+                        <div class="bg-atlas-text h-1 rounded-full relative z-10" :style="{ width: levelData.progress_percent + '%' }"></div>
                     </div>
                 </div>
             </div>
 
-            <!-- Column: Done -->
-            <div class="flex-shrink-0 w-80 flex flex-col bg-emerald-50/50 dark:bg-emerald-900/10 rounded-2xl border border-emerald-50 dark:border-emerald-900/30">
-                <div class="p-4 border-b border-emerald-50 dark:border-emerald-900/30 flex justify-between items-center bg-white dark:bg-gray-800/80 rounded-t-2xl shadow-sm z-10">
-                    <h3 class="font-bold text-gray-900 dark:text-white flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500/50"></span>
-                        Done
-                    </h3>
-                    <span class="bg-emerald-100 text-emerald-600 dark:bg-emerald-900/50 dark:text-emerald-300 text-xs font-bold px-2 py-0.5 rounded-full">{{ doneTasks.length }}</span>
-                </div>
+
+
+            <div class="h-[calc(100vh-20rem)] flex gap-10 pb-8 pt-4 overflow-x-auto w-full max-w-7xl justify-center items-start">
                 
-                <div class="flex-1 overflow-y-auto p-4 space-y-3">
-                    <div v-for="task in doneTasks" :key="task.id" class="group bg-white dark:bg-gray-800 p-4 rounded-xl border border-emerald-50 dark:border-gray-800 shadow-sm hover:border-gray-200 dark:hover:border-gray-600 transition-all flex flex-col justify-between min-h-[100px] opacity-75 hover:opacity-100">
-                        <div>
-                            <p class="font-medium text-sm text-gray-500 dark:text-gray-400 line-through leading-snug">{{ task.title }}</p>
+                <!-- Column: Todo -->
+                <div class="flex-shrink-0 w-80 flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-6 pl-2 pr-1">
+                        <h3 class="font-serif text-lg text-atlas-text flex items-center gap-3 tracking-tight">
+                            <span class="w-1.5 h-1.5 rounded-full bg-atlas-muted opacity-30"></span>
+                            To Do
+                        </h3>
+                        <span class="text-[10px] font-bold text-atlas-muted tracking-widest uppercase">{{ todoTasks.length }}</span>
+                    </div>
+                    
+                    <div class="w-full flex flex-col gap-5 overflow-y-auto max-h-full pb-6 px-1">
+                        <div v-for="task in todoTasks" :key="task.id" 
+                            :class="['group relative p-6 rounded-[24px] border transition-all hover:-translate-y-1', 
+                                     task.is_blocker 
+                                     ? 'bg-red-500/5 border-red-500/40 shadow-[0_8px_30px_rgb(239,68,68,0.1)] hover:shadow-[0_8px_30px_rgb(239,68,68,0.2)]' 
+                                     : 'bg-atlas-surface border-atlas-border shadow-sm hover:shadow-ambient']">
+                            <div class="flex justify-between items-start gap-4">
+                                <p class="text-sm font-serif text-atlas-text leading-relaxed tracking-wide flex-1">{{ task.title }}</p>
+                                <button @click="openEditMenu(task)" class="text-atlas-muted hover:text-atlas-text opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                </button>
+                            </div>
+                            <div class="flex justify-end mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button @click="updateStatus(task, 'in_progress')" class="text-[9px] uppercase tracking-[0.2em] font-bold text-atlas-muted hover:text-atlas-text flex items-center gap-2 transition-colors">
+                                    Engage <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                                </button>
+                            </div>
                         </div>
-                        <div class="flex justify-between mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                            <button @click="updateStatus(task, 'in_progress')" class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 p-1.5 rounded-lg transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
-                            </button>
-                            <button @click="deleteTask(task)" class="text-red-400 hover:text-red-600 dark:hover:text-red-400 p-1.5 rounded-lg transition-colors">
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                            </button>
+
+                        <div class="mt-2 pl-2 pr-2">
+                            <form @submit.prevent="submitTask('todo')" class="flex gap-2 relative group/form">
+                                <input type="text" v-model="taskForm.title" placeholder="Define objective..." required class="w-full text-xs rounded-xl border-atlas-border bg-atlas-panel focus:ring-1 focus:ring-atlas-text focus:border-atlas-text text-atlas-text placeholder:text-atlas-muted/30 py-4 px-5 pr-12 transition-all">
+                                <button type="submit" :disabled="taskForm.processing" class="absolute right-4 top-3.5 text-atlas-muted hover:text-atlas-text p-1 transition-colors opacity-40 group-focus-within/form:opacity-100 group-hover/form:opacity-100">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                                </button>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </div>
 
+                <!-- Column: In Progress -->
+                <div class="flex-shrink-0 w-80 flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-6 pl-1 pr-1">
+                        <h3 class="font-serif text-lg text-atlas-text flex items-center gap-3 tracking-tight">
+                            <span class="w-1.5 h-1.5 rounded-full bg-atlas-primaryStart animate-pulse"></span>
+                            Active
+                        </h3>
+                        <span class="text-[10px] font-bold text-atlas-primaryStart tracking-widest uppercase">{{ inProgressTasks.length }}</span>
+                    </div>
+                    
+                    <div class="w-full flex flex-col gap-5 overflow-y-auto max-h-full pb-6 px-1">
+                        <div v-for="task in inProgressTasks" :key="task.id" 
+                            :class="['group relative p-6 rounded-[24px] border transition-all hover:-translate-y-1', 
+                                     task.is_blocker 
+                                     ? 'bg-red-500/5 border-red-500/40 shadow-[0_8px_30px_rgb(239,68,68,0.1)] ring-1 ring-red-500/10' 
+                                     : 'bg-atlas-surface border-atlas-primaryStart/20 shadow-ambient ring-1 ring-atlas-primaryStart/5']">
+                            <div class="absolute right-4 top-4">
+                                <button @click="openEditMenu(task)" class="text-atlas-muted hover:text-atlas-text opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"></path></svg>
+                                </button>
+                            </div>
+                            <p class="text-sm font-serif font-bold text-atlas-text leading-relaxed tracking-wide underline decoration-atlas-primaryStart/20 underline-offset-4 mt-2 mb-2">{{ task.title }}</p>
+                            <div class="flex justify-between items-center mt-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button @click="updateStatus(task, 'todo')" class="text-atlas-muted hover:text-atlas-text transition-colors text-[9px] uppercase tracking-widest font-bold">
+                                    &larr; Revert
+                                </button>
+                                <button @click="updateStatus(task, 'done')" class="text-[9px] font-bold uppercase tracking-[0.2em] text-atlas-surface bg-atlas-text px-5 py-2.5 rounded-lg hover:opacity-90 transition-all flex items-center gap-2">
+                                    Conclude <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Column: Done -->
+                <div class="flex-shrink-0 w-80 flex flex-col items-center">
+                    <div class="w-full flex justify-between items-center mb-6 pl-1 pr-1">
+                        <h3 class="font-serif text-lg text-atlas-muted flex items-center gap-3 tracking-tight opacity-50">
+                            <span class="w-1.5 h-1.5 rounded-full bg-atlas-muted/30"></span>
+                            Concluded
+                        </h3>
+                        <span class="text-[10px] font-bold text-atlas-muted tracking-widest uppercase opacity-30">{{ doneTasks.length }}</span>
+                    </div>
+                    
+                    <div class="w-full flex flex-col gap-5 overflow-y-auto max-h-full pb-6 px-1">
+                        <div v-for="task in doneTasks" :key="task.id" class="group bg-transparent p-6 rounded-[24px] border border-atlas-border/50 transition-all grayscale opacity-40 hover:opacity-100 hover:bg-atlas-panel hover:grayscale-0">
+                            <p class="text-sm font-serif text-atlas-muted line-through leading-relaxed">{{ task.title }}</p>
+                            <div class="flex justify-between mt-8 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <button @click="updateStatus(task, 'in_progress')" class="text-atlas-muted hover:text-atlas-text transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+                                </button>
+                                <button @click="deleteTask(task)" class="text-red-500/30 hover:text-red-500 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </AuthenticatedLayout>
+
+        <EditTaskModal 
+            :show="showEditModal" 
+            :task="editingTask" 
+            @close="showEditModal = false; editingTask = null" 
+        />
+        
+        <EditProjectModal 
+            :show="showEditProjectModal"
+            :project="project"
+            @close="showEditProjectModal = false"
+        />
+</AuthenticatedLayout>
 </template>

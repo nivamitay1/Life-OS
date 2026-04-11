@@ -28,17 +28,17 @@ const filteredRuns = computed(() => {
 </script>
 
 <template>
-    <div class="bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-2xl shadow-sm overflow-hidden">
-        <div class="px-6 py-5 border-b border-gray-100 dark:border-gray-700 flex flex-col sm:flex-row justify-between sm:items-center gap-4">
-            <h3 class="font-bold text-gray-900 dark:text-white">Recent Runs</h3>
+    <div class="bg-atlas-panel border border-atlas-border backdrop-blur-2xl rounded-[24px] shadow-ambient overflow-hidden">
+        <div class="px-8 py-6 border-b border-atlas-border/50 flex flex-col sm:flex-row justify-between sm:items-center gap-4 bg-atlas-background/30">
+            <h3 class="font-bold text-atlas-muted text-[10px] uppercase tracking-widest">Recent Runs</h3>
             <div class="flex gap-2">
-                <select v-model="filterType" class="text-xs font-medium rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 py-1.5 focus:border-orange-500 text-gray-900 dark:text-white">
+                <select v-model="filterType" class="bg-atlas-surface text-atlas-text text-xs font-bold rounded-lg border border-atlas-border py-1.5 focus:border-atlas-text focus:ring-0 shadow-sm transition-colors cursor-pointer hover:bg-atlas-panel">
                     <option value="all">All Types</option>
                     <option value="easy">Easy</option>
                     <option value="workout">Workout</option>
                     <option value="long">Long Run</option>
                 </select>
-                <select v-model="sortBy" class="text-xs font-medium rounded-lg border-gray-300 dark:border-gray-700 dark:bg-gray-900 py-1.5 focus:border-orange-500 text-gray-900 dark:text-white">
+                <select v-model="sortBy" class="bg-atlas-surface text-atlas-text text-xs font-bold rounded-lg border border-atlas-border py-1.5 focus:border-atlas-text focus:ring-0 shadow-sm transition-colors cursor-pointer hover:bg-atlas-panel">
                     <option value="date_desc">Newest First</option>
                     <option value="date_asc">Oldest First</option>
                     <option value="dist_desc">Longest Distance</option>
@@ -46,31 +46,31 @@ const filteredRuns = computed(() => {
                 </select>
             </div>
         </div>
-        <ul v-if="filteredRuns.length > 0" class="divide-y divide-gray-100 dark:divide-gray-700/50">
-            <li v-for="run in filteredRuns" :key="run.id" class="px-6 py-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors gap-4">
+        <ul v-if="filteredRuns.length > 0" class="divide-y divide-atlas-border/30">
+            <li v-for="run in filteredRuns" :key="run.id" class="px-8 py-5 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-atlas-background/50 transition-colors gap-4 group">
                 <div>
-                    <div class="flex items-center gap-2 mb-1">
-                        <h4 class="font-bold text-sm text-gray-900 dark:text-white">{{ run.notes ? run.notes.split('\n')[0] : 'Run' }}</h4>
-                        <span class="bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded">{{ run.type }}</span>
+                    <div class="flex items-center gap-3 mb-2">
+                        <h4 class="font-serif text-xl tracking-tight text-atlas-text group-hover:text-atlas-primaryStart transition-colors">{{ run.notes ? run.notes.split('\n')[0] : 'Log: Unnamed Run' }}</h4>
+                        <span class="bg-atlas-surface border border-atlas-border/50 text-atlas-muted text-[10px] font-bold uppercase tracking-widest px-2 py-0.5 rounded shadow-sm">{{ run.type }}</span>
                     </div>
-                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ run.date }}</p>
+                    <p class="text-[10px] uppercase tracking-widest text-atlas-muted font-bold">{{ run.date }}</p>
                 </div>
-                <div class="flex items-center gap-6">
-                    <div class="text-right">
-                        <p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Dist</p>
-                        <p class="font-black text-gray-900 dark:text-white">{{ run.distance }}km</p>
+                <div class="flex items-center gap-8">
+                    <div class="text-left w-16">
+                        <p class="text-[10px] uppercase font-bold text-atlas-muted tracking-widest mb-1">Dist</p>
+                        <p class="font-bold text-atlas-text text-base">{{ run.distance }} <span class="text-xs font-sans font-medium text-atlas-muted">km</span></p>
                     </div>
-                    <div class="text-right">
-                        <p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Pace</p>
-                        <p class="font-bold text-gray-700 dark:text-gray-300">{{ run.pace }}</p>
+                    <div class="text-left w-16">
+                        <p class="text-[10px] uppercase font-bold text-atlas-muted tracking-widest mb-1">Pace</p>
+                        <p class="font-bold text-atlas-text text-base">{{ run.pace }}</p>
                     </div>
-                    <div class="text-right">
-                        <p class="text-[10px] uppercase font-bold text-gray-400 mb-0.5">Time</p>
-                        <p class="font-bold text-gray-700 dark:text-gray-300">{{ run.duration }}</p>
+                    <div class="text-left w-16">
+                        <p class="text-[10px] uppercase font-bold text-atlas-muted tracking-widest mb-1">Time</p>
+                        <p class="font-bold text-atlas-text text-base">{{ run.duration }}</p>
                     </div>
                 </div>
             </li>
         </ul>
-        <div v-else class="p-6 text-center text-gray-500 dark:text-gray-400 text-sm">No runs logged yet!</div>
+        <div v-else class="p-12 text-center text-atlas-muted text-sm font-bold tracking-wide italic">No runs logged in this view.</div>
     </div>
 </template>

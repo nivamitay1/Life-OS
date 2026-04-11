@@ -57,6 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::controller(\App\Http\Controllers\BuildController::class)->prefix('projects')->name('build.')->group(function () {
         Route::get('/', 'index')->name('index');
         Route::post('/project', 'storeProject')->name('project.store');
+        Route::patch('/project/{project}', 'updateProject')->name('project.update');
         Route::get('/{project}', 'show')->name('project.show');
         Route::post('/task', 'storeTask')->name('task.store');
         Route::patch('/tasks/{task}', 'updateTask')->name('task.update');

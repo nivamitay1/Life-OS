@@ -19,7 +19,8 @@ class UpdateTaskRequest extends FormRequest
     {
         return [
             'status' => ['sometimes', new Enum(TaskStatusEnum::class)],
-            'is_blocker' => 'sometimes|boolean'
+            'is_blocker' => 'sometimes|boolean',
+            'title' => 'sometimes|string|max:255'
         ];
     }
 }

@@ -10,6 +10,7 @@ use App\Enums\ModuleEnum;
 use App\Enums\TaskStatusEnum;
 use App\Http\Requests\StoreProjectRequest;
 use App\Http\Requests\StoreTaskRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Http\Requests\UpdateTaskRequest;
 use App\Http\Resources\BuildLogResource;
 use App\Http\Resources\BuildProjectResource;
@@ -63,7 +64,10 @@ class BuildController extends Controller
     public function show(Request $request, BuildProject $project): Response
     {
         $this->authorize('view', $project);
-        $tasks = BuildTask::where('build_project_id', $project->id)->orderBy('created_at', 'desc')->get();
+        $tasks = BuildTask::where('build_project_id', $project->id)
+            ->orderBy('is_blocker', 'desc')
+            ->orderBy('created_at', 'desc')
+            ->get();
         return Inertia::render('Build/Show', [
             'project' => [
                 'id' => $project->id, 'name' => $project->name,
@@ -78,6 +82,13 @@ class BuildController extends Controller
     public function storeProject(StoreProjectRequest $request, CreateProjectAction $action): RedirectResponse
     {
         $action->handle($request->user()->id, $request->validated());
+        return redirect()->back();
+    }
+
+    public function updateProject(UpdateProjectRequest $request, BuildProject $project): RedirectResponse
+    {
+        $this->authorize('update', $project);
+        $project->update($request->validated());
         return redirect()->back();
     }
 

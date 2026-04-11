@@ -9,30 +9,31 @@ defineProps({
 </script>
 
 <template>
-    <Head title="Life OS - Your Personal Command Center" />
+    <Head title="Life OS - Spatial Command Center" />
 
-    <div class="min-h-screen bg-white dark:bg-gray-950 selection:bg-indigo-500 selection:text-white flex flex-col items-center">
-        <!-- Navigation Bar -->
+    <div class="min-h-screen bg-atlas-background text-atlas-text flex flex-col items-center relative overflow-hidden font-sans">
+        
+        <!-- Abstract gradient for cinematic spatial depth -->
+        <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[1200px] h-[800px] bg-gradient-to-b from-atlas-primaryStart/5 to-transparent rounded-full blur-[100px] pointer-events-none -z-10"></div>
+
+        <!-- Minimal Header -->
         <header class="w-full absolute top-0 z-50">
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="flex items-center justify-between h-24">
-                    <div class="flex items-center gap-3">
-                        <ApplicationLogo class="h-10 w-auto text-indigo-600 dark:text-indigo-400" />
-                        <span class="text-2xl font-black tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-500 dark:from-white dark:to-gray-400">Life OS</span>
-                    </div>
+            <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8 py-10">
+                <div class="flex items-center justify-between">
+                    <ApplicationLogo />
                     
-                    <nav v-if="canLogin" class="flex gap-4">
+                    <nav v-if="canLogin" class="flex gap-6 items-center">
                         <template v-if="$page.props.auth.user">
-                            <Link href="/" class="px-5 py-2.5 text-sm font-bold bg-indigo-600 hover:bg-indigo-700 text-white rounded-full transition-all shadow-sm">
-                                Open Command Center
+                            <Link href="/home" class="px-6 py-2.5 text-sm tracking-wide text-atlas-surface bg-atlas-primaryStart rounded-full hover:bg-atlas-primaryEnd transition-colors shadow-ambient">
+                                Open Canvas
                             </Link>
                         </template>
                         <template v-else>
-                            <Link :href="route('login')" class="px-5 py-2.5 text-sm font-bold text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <Link :href="route('login')" class="text-sm font-medium text-atlas-muted hover:text-atlas-text transition-colors">
                                 Log in
                             </Link>
-                            <Link v-if="canRegister" :href="route('register')" class="px-5 py-2.5 text-sm font-bold bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full hover:bg-gray-800 dark:hover:gray-100 transition-all shadow-sm">
-                                Register
+                            <Link v-if="canRegister" :href="route('register')" class="px-6 py-2.5 text-sm tracking-wide text-atlas-surface bg-atlas-primaryStart rounded-full hover:bg-atlas-primaryEnd transition-colors shadow-ambient">
+                                Create Account
                             </Link>
                         </template>
                     </nav>
@@ -40,65 +41,45 @@ defineProps({
             </div>
         </header>
 
-        <!-- Hero Section -->
-        <main class="flex-1 w-full flex flex-col justify-center items-center py-32 relative overflow-hidden">
+        <!-- Spatial Hero Section -->
+        <main class="flex-1 w-full max-w-4xl mx-auto flex flex-col justify-center items-center py-48 px-4 text-center z-10">
             
-            <!-- Abstract Background Gradients -->
-            <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-indigo-500/20 to-purple-500/20 dark:from-indigo-500/10 dark:to-purple-500/10 rounded-full blur-3xl opacity-50 pointer-events-none"></div>
-
-            <div class="relative z-10 w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-10">
-                <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-xs font-bold uppercase tracking-widest text-gray-500 dark:text-gray-400 mb-4">
-                    <span class="flex h-2 w-2 relative">
-                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-indigo-400 opacity-75"></span>
-                        <span class="relative inline-flex rounded-full h-2 w-2 bg-indigo-500"></span>
-                    </span>
-                    Now in Beta
-                </div>
-
-                <h1 class="text-5xl md:text-7xl font-black tracking-tight text-gray-900 dark:text-white leading-[1.1]">
-                    Run your life perfectly. <br class="hidden sm:block" />
-                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-500">Without the noise.</span>
+            <div class="space-y-12">
+                <h1 class="text-6xl md:text-8xl font-serif font-medium tracking-tight text-atlas-text leading-[1.05]">
+                    Run your life from a <br class="hidden sm:block" />
+                    <span class="italic text-atlas-muted">serene canvas.</span>
                 </h1>
                 
-                <p class="max-w-2xl mx-auto text-lg md:text-xl text-gray-600 dark:text-gray-400 font-medium leading-relaxed">
-                    Life OS is a modular personal operating system. Track your finances, training, projects, and goals in one unified command center designed for maximum momentum.
+                <p class="max-w-2xl mx-auto text-lg md:text-xl text-atlas-muted font-normal leading-relaxed tracking-wide">
+                    A deeply intentional operating system to track your finances, training, and goals. Reduce cognitive load. Regain focus.
                 </p>
 
-                <div class="flex flex-col sm:flex-row justify-center items-center gap-4 pt-8">
+                <div class="flex flex-col sm:flex-row justify-center items-center gap-6 pt-12">
                     <template v-if="$page.props.auth.user">
-                        <Link href="/" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-white bg-indigo-600 rounded-full hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/30 flex items-center justify-center gap-2">
-                            Enter Workspace
-                            <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                            </svg>
+                        <Link href="/home" class="px-10 py-4 text-base tracking-wide text-atlas-surface bg-gradient-to-br from-atlas-primaryStart to-atlas-primaryEnd rounded-full hover:shadow-ambient transition-all shadow-ambient">
+                            Enter the Canvas
                         </Link>
                     </template>
                     <template v-else>
-                        <Link :href="route('register')" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-gray-900 bg-white rounded-full hover:bg-gray-50 border border-gray-200 transition shadow-xl shadow-gray-200/50 dark:bg-gray-900 dark:text-white dark:border-gray-700 dark:shadow-none dark:hover:bg-gray-800 flex items-center justify-center gap-2">
+                        <Link :href="route('register')" class="px-10 py-4 text-base tracking-wide text-atlas-surface bg-gradient-to-br from-atlas-primaryStart to-atlas-primaryEnd rounded-3xl hover:shadow-ambient transition-all shadow-ambient">
                             Start Building Now
-                            <svg class="h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                            </svg>
-                        </Link>
-                        <Link :href="route('login')" class="w-full sm:w-auto px-8 py-4 text-base font-bold text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition">
-                            Login into OS
                         </Link>
                     </template>
                 </div>
             </div>
 
-            <!-- Dashboard Preview Mockup -->
-            <div class="relative w-full max-w-6xl mx-auto px-4 mt-24">
-                <div class="rounded-2xl border border-gray-200/50 dark:border-gray-800 bg-white/50 dark:bg-gray-900/50 backdrop-blur-xl shadow-2xl overflow-hidden aspect-[16/9] flex items-center justify-center text-gray-900 dark:text-white">
-                    <div class="absolute inset-0 bg-gradient-to-t from-gray-50 dark:from-gray-950 via-transparent to-transparent z-10"></div>
-                    <p class="text-sm font-bold text-gray-400 z-20">Premium Dashboard Interface Preview</p>
+            <!-- Glassmorphic Preview Portal -->
+            <div class="w-full max-w-5xl mx-auto mt-40">
+                <div class="rounded-3xl border border-atlas-border bg-atlas-panel backdrop-blur-3xl shadow-ambient overflow-hidden aspect-[21/9] flex items-center justify-center relative">
+                    <div class="absolute inset-0 bg-gradient-to-t from-atlas-background/50 via-transparent to-transparent z-10 pointer-events-none"></div>
+                    <p class="text-sm font-serif italic text-atlas-muted z-20">The Digital Curator Preview</p>
                 </div>
             </div>
 
         </main>
         
-        <footer class="w-full py-10 border-t border-gray-100 dark:border-gray-900 text-center">
-            <p class="text-sm font-medium text-gray-400 dark:text-gray-600">&copy; 2026 Life OS. All rights reserved.</p>
+        <footer class="w-full py-16 text-center">
+            <p class="text-sm font-serif italic text-atlas-muted">&copy; 2026 Life OS.</p>
         </footer>
     </div>
 </template>
