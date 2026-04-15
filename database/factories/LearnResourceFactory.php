@@ -15,13 +15,13 @@ class LearnResourceFactory extends Factory
     {
         return [
             'user_id' => User::factory(),
-            'type' => $this->faker->randomElement(['book', 'course', 'video', 'article']),
+            'type' => $this->faker->randomElement(['book', 'course', 'article', 'podcast', 'other']),
             'title' => $this->faker->sentence(3),
             'author' => $this->faker->name(),
             'status' => $this->faker->randomElement(LearnResourceStatusEnum::cases()),
             'total_units' => $this->faker->numberBetween(10, 50),
             'current_unit' => 0,
-            'unit_label' => 'Chapters',
+            'unit_label' => $this->faker->randomElement(['page', 'chapter', 'lesson', 'module', 'episode', 'article', 'other']),
             'started_at' => null,
             'last_session_at' => null,
             'completed_at' => null,

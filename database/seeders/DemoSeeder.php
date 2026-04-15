@@ -1,6 +1,6 @@
 <?php
 
-namespace Database\Factories;
+namespace Database\Seeders;
 
 use App\Models\Badge;
 use App\Models\BuildLog;
