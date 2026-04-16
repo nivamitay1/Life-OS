@@ -14,6 +14,8 @@ class RunningPlanWeekResource extends JsonResource
         return [
             'id' => $this->id,
             'week_number' => $this->week_number,
+            'start_date' => $this->start_date?->toDateString(),
+            'end_date' => $this->end_date?->toDateString(),
             'theme_label' => $this->theme_label,
             'workouts' => RunningPlanWorkoutResource::collection($this->whenLoaded('workouts')),
         ];

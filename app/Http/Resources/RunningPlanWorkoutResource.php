@@ -14,10 +14,10 @@ class RunningPlanWorkoutResource extends JsonResource
         return [
             'id' => $this->id,
             'day_of_week' => $this->day_of_week,
-            'workout_type' => $this->workout_type,
+            'workout_type' => $this->workout_type?->value ?? $this->workout_type,
             'title' => $this->title,
             'status' => $this->status?->value ?? $this->status,
-            'scheduled_date' => $this->scheduled_date,
+            'scheduled_date' => $this->scheduled_date?->toDateString(),
             'target_distance_km' => $this->target_distance_km,
             'target_duration_sec' => $this->target_duration_sec,
             'instructions' => $this->instructions,

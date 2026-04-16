@@ -80,22 +80,40 @@ Knowledge tracking for books, courses, articles, and podcasts. Reading/study ses
 ### Installation
 
 ```bash
-# Clone and install
+# Clone the repository
 git clone <repo-url> life-os
 cd life-os
+
+# Install backend and frontend dependencies
 composer install
 npm install
 
-# Setup environment
+# Create the environment file
 cp .env.example .env
+
+# Generate the application key
 php artisan key:generate
 
-# Database & Demo Data
+# Create the SQLite database file
 touch database/database.sqlite
+
+# Run migrations and seed demo data
 php artisan migrate:fresh --seed --seeder=DemoSeeder
 
-# Launch
+# Build frontend assets
+npm run build
+
+# Start the Vite dev server for local development
 npm run dev
+```
+
+### Demo User
+
+Running `php artisan migrate:fresh --seed --seeder=DemoSeeder` creates a demo account with the following credentials:
+
+```text
+Email: demo@example.com
+Password: password
 ```
 
 ### Running Tests

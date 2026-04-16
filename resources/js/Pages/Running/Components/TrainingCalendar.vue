@@ -30,6 +30,16 @@ const formatDate = (dateStr) => {
     return new Date(dateStr).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
 };
 
+const normalizeDateString = (dateStr) => {
+    if (!dateStr) return '';
+
+    if (typeof dateStr === 'string') {
+        return dateStr.split('T')[0].split(' ')[0];
+    }
+
+    return new Date(dateStr).toISOString().split('T')[0];
+};
+
 const updateWorkoutStatus = (workoutId, status) => {
     useForm({ status }).patch(route('running.workout.status', workoutId), { preserveScroll: true });
 };
@@ -37,7 +47,30 @@ const updateWorkoutStatus = (workoutId, status) => {
 const currentWeek = computed(() => {
     if (!props.activePlan) return null;
     const now = new Date().toISOString().split('T')[0];
-    return props.activePlan.weeks.find(w => w.start_date <= now && w.end_date >= now) || props.activePlan.weeks[0];
+    return props.activePlan.weeks.find((week) => {
+        return week.start_date && week.end_date && week.start_date <= now && week.end_date >= now;
+    }) || props.activePlan.weeks[0] || null;
+});
+
+const weekDays = computed(() => {
+    if (!currentWeek.value?.start_date) {
+        return [];
+    }
+
+    const workouts = Array.isArray(currentWeek.value.workouts) ? currentWeek.value.workouts : [];
+    const weekStart = new Date(`${currentWeek.value.start_date}T00:00:00`);
+
+    return Array.from({ length: 7 }, (_, index) => {
+        const date = new Date(weekStart);
+        date.setDate(weekStart.getDate() + index);
+
+        return {
+            dayNumber: index + 1,
+            date,
+            dateString: date.toISOString().split('T')[0],
+            workout: workouts.find((workout) => normalizeDateString(workout.scheduled_date) === date.toISOString().split('T')[0]) || null,
+        };
+    });
 });
 </script>
 
@@ -89,11 +122,11 @@ const currentWeek = computed(() => {
                     <p class="text-[10px] uppercase font-bold tracking-widest text-atlas-muted mt-2">{{ formatDate(currentWeek.start_date) }} to {{ formatDate(currentWeek.end_date) }}</p>
                 </div>
                 <div class="flex gap-5 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory">
-                    <div v-for="day in 7" :key="day" class="min-w-[280px] flex-shrink-0 snap-start min-h-[220px] flex flex-col">
-                        <div v-if="currentWeek.workouts.find(w => new Date(w.scheduled_date).getDay() === (day%7))" 
-                                :class="['h-full border p-6 flex flex-col transition-colors', currentWeek.workouts.find(w => new Date(w.scheduled_date).getDay() === (day%7)).status === 'completed' ? 'bg-atlas-primaryStart/5 border-atlas-primaryStart/40' : 'bg-atlas-panel border-atlas-border shadow-sm']">
+                    <div v-for="day in weekDays" :key="day.dateString" class="min-w-[280px] flex-shrink-0 snap-start min-h-[220px] flex flex-col">
+                        <div v-if="day.workout" 
+                                :class="['h-full border p-6 flex flex-col transition-colors', day.workout.status === 'completed' ? 'bg-atlas-primaryStart/5 border-atlas-primaryStart/40' : 'bg-atlas-panel border-atlas-border shadow-sm']">
                             
-                            <template v-for="workout in [currentWeek.workouts.find(w => new Date(w.scheduled_date).getDay() === (day%7))]">
+                            <template v-for="workout in [day.workout]">
                                 <div class="text-[10px] font-bold uppercase tracking-widest text-atlas-muted mb-3 flex justify-between">
                                     <span>{{ new Date(workout.scheduled_date).toLocaleDateString('en-US', {weekday: 'short'}) }}</span>
                                     <div class="flex gap-2">
@@ -126,12 +159,16 @@ const currentWeek = computed(() => {
                                 </div>
                             </template>
                         </div>
-                        <div v-else @click="emit('openAddWorkout', currentWeek.id, new Date(new Date(currentWeek.start_date).getTime() + ((day - 1) * 24 * 60 * 60 * 1000)).toISOString().split('T')[0])" class="h-full border-[1.5px] border-dashed border-atlas-border/50 p-6 flex flex-col justify-center items-center opacity-60 hover:bg-atlas-surface hover:border-solid hover:border-atlas-text hover:opacity-100 cursor-pointer transition-all group">
-                            <span class="text-[9px] uppercase tracking-[0.3em] font-bold text-atlas-muted mb-2 group-hover:text-atlas-text transition-colors">Day {{ day }}</span>
+                        <div v-else @click="emit('openAddWorkout', currentWeek.id, day.dateString)" class="h-full border-[1.5px] border-dashed border-atlas-border/50 p-6 flex flex-col justify-center items-center opacity-60 hover:bg-atlas-surface hover:border-solid hover:border-atlas-text hover:opacity-100 cursor-pointer transition-all group">
+                            <span class="text-[9px] uppercase tracking-[0.3em] font-bold text-atlas-muted mb-2 group-hover:text-atlas-text transition-colors">{{ day.date.toLocaleDateString('en-US', { weekday: 'short' }) }}</span>
                             <span class="text-xs uppercase tracking-[0.2em] font-bold text-atlas-muted group-hover:text-atlas-text">+ Add Drill</span>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div v-else class="py-12 text-center">
+                <p class="text-sm tracking-wide text-atlas-muted">This plan has no scheduled weeks yet.</p>
+                <p class="mt-2 text-[10px] font-bold uppercase tracking-[0.2em] text-atlas-muted">Seed or create workouts to populate the calendar.</p>
             </div>
         </div>
     </div>
